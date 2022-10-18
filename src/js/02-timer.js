@@ -1,3 +1,4 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -7,6 +8,9 @@ const refs = {
   minutesEl: document.querySelector('.value[data-minutes]'),
   secondsEl: document.querySelector('.value[data-seconds]'),
   btnStartEl: document.querySelector('button[data-start]'),
+
+  divTimerEl: document.querySelector('.timer'),
+  divFieldEl: document.querySelectorAll('.field'),
 
   setDisableBtn() {
     this.btnStartEl.setAttribute('disabled', 'true');
@@ -18,16 +22,10 @@ const refs = {
     this.btnStartEl.removeAttribute('disabled');
   },
 };
-
-refs.btnStartEl.addEventListener('click', onStartTimer);
-
 let passTime = null;
 let nextSelectedTime = null;
 let intervalId = null;
 const TIME_INTERVAL = 1000;
-
-refs.setDisableBtn();
-
 const selector = '#datetime-picker';
 const options = {
   enableTime: true,
@@ -37,7 +35,7 @@ const options = {
   onClose(selectedDates) {
     nextSelectedTime = new Date(selectedDates[0]).getTime();
     if (nextSelectedTime < Date.now()) {
-      alert('Please choose a date in the future');
+      Notify.failure('Please choose a date in the future', { timeout: 3000 });
       nextSelectedTime = null;
       if (refs.isDisableBtn()) {
         refs.setDisableBtn();
@@ -48,6 +46,10 @@ const options = {
     refs.setEnableBtn();
   },
 };
+
+setMarkupStyle();
+refs.setDisableBtn();
+refs.btnStartEl.addEventListener('click', onStartTimer);
 
 flatpickr(selector, options);
 
@@ -104,4 +106,18 @@ function showLeftTime(pt) {
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
+}
+
+function setMarkupStyle() {
+  refs.divTimerEl.style.display = 'flex';
+  refs.divTimerEl.style.justifyContent = 'center';
+
+  refs.divFieldEl.forEach(el => {
+    el.style.marginRight = '30px';
+    el.style.display = 'flex';
+    el.style.flexDirection = 'column';
+    el.style.alignItems = 'center';
+    el.firstElementChild.style.fontSize = '40px';
+  });
+  refs.divTimerEl.lastElementChild.style.marginRight = '0px';
 }
