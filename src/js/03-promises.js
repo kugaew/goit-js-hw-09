@@ -19,7 +19,7 @@ function onSubmit(e) {
 }
 
 function showAllResults(delay, step, amount) {
-  for (i = 1, d = delay; i <= amount; i += 1, d += step) {
+  for (let i = 1, d = delay; i <= amount; i += 1, d += step) {
     showPermiseResult(i, d);
   }
 }
